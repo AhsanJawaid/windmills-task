@@ -91,36 +91,34 @@ After this, check the subscription table, expired trials should now have type = 
 ## RBAC-Based Access Control
 
 We implemented Role-Based Access Control using a is_admin field on users.
-
-   Admins can view all subscriptions.
-   Owners can only view their own subscriptions.
-   Any other user trying to access a subscription will get 403 Unauthorized.
-
-Implemented using Laravel Policies:
+- Admins can view all subscriptions.
+- Owners can only view their own subscriptions.
+- Any other user trying to access a subscription will get 403 Unauthorized.
+- Implemented using Laravel Policies:
 ```bash
 $this->authorize('view', $subscription);
 ```
 
 ## Idempotent Migrations
-   All migrations are safe to run multiple times.
-   Created missing columns, indexes, foreign keys in a way that wont break if table already exists.
-   Example: subscriptions table migration checks if columns exists before adding.
+- All migrations are safe to run multiple times.
+- Created missing columns, indexes, foreign keys in a way that wont break if table already exists.
+- Example: subscriptions table migration checks if columns exists before adding.
 
 ## Performance Optimization
-   Original Yii2 code had N+1 query problem when fetching subscriptions with user and plan.
-   Fixed using Eager Loading in Laravel:
+- Original Yii2 code had N+1 query problem when fetching subscriptions with user and plan.
+- Fixed using Eager Loading in Laravel:
 ```bash
 $subscriptions = Subscription::with(['user', 'plan'])->get();
 ```
-   Now the number of queries stays constant regardless of how many subscriptions are displayed.
+- Now the number of queries stays constant regardless of how many subscriptions are displayed.
 
 ## Testing
-   We use MySQL for unit tests.
-   Seeders populate users, plans, subscriptions for testing.
-   PHPUnit tests cover:
-      Trial conversion to paid
-      Owner/admin RBAC checks
-      N+1 query prevention
+- We use MySQL for unit tests.
+- Seeders populate users, plans, subscriptions for testing.
+- PHPUnit tests cover:
+  - Trial conversion to paid
+  - Owner/admin RBAC checks
+  - N+1 query prevention
 
 ## Run tests:
 ```bash   
